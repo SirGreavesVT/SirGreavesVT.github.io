@@ -370,7 +370,7 @@ And then I just rotate by 30*num where num is the current box's number in the 'q
 //	Set three-second time-out to hide document when mouse leaves
 				document.addEventListener('mouseout', function(){
 					idleTimer = setTimeout(function(){
-//						hideControls(document.body);
+						hideControls(document.body);
 					}, 3*1000);
 				})
 
@@ -467,7 +467,6 @@ And then I just rotate by 30*num where num is the current box's number in the 'q
 	<body class="hide">
 		<canvas id="paintCanvas"></canvas>
 
-
 		<div id="brushGroup" class="show">
 			<div id="brushSwatches"></div>
 
@@ -486,7 +485,6 @@ And then I just rotate by 30*num where num is the current box's number in the 'q
 				</label>
 			</div>
 		</div>
-
 
 		<div id="brush"></div>
 	</body>
