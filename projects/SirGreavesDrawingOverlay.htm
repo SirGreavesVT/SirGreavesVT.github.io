@@ -248,7 +248,7 @@
 
 
 //	Set reference variables for HTML elements
-				var CSSroot = document.querySelector(':root');
+				var cssRoot = document.querySelector(':root');
 				var brush = document.getElementById('brush');
 //				var brushDebug = document.getElementById('brushDebug');
 				var brushGroup = document.getElementById('brushGroup');
@@ -351,7 +351,7 @@ And then I just rotate by 30*num where num is the current box's number in the 'q
 
 //	Set current color, update the root CSS variable, etc.
 				function setCurrentColor(currentColor) {
-					CSSroot.style.setProperty('--current-color', currentColor);
+					cssRoot.style.setProperty('--current-color', currentColor);
 					brushColor = currentColor;
 					canvasContext.strokeStyle = currentColor;
 				}
@@ -437,11 +437,6 @@ And then I just rotate by 30*num where num is the current box's number in the 'q
 //	Listen for a draw-mode change. Changes the draw mode. haha
 				drawModeToggle.addEventListener('change', function(e){
 					canvasContext.globalCompositeOperation = e.target.value;
-					if (e.target.value == 'destination-out') {
-						brush.style.backgroundColor = 'transparent';
-					} else {
-						brush.style.backgroundColor = brushColor;
-					}
 					console.log(e.target.value);
 				});
 
