@@ -255,6 +255,7 @@
 				var brushSwatches = document.getElementById('brushSwatches');
 				var canvas = document.getElementById("paintCanvas");
 				var drawModeToggle = document.getElementById("drawMode");
+				var prevDrawMode = 'source-over';
 
 //	Set canvas to viewport size
 				canvas.width = window.innerWidth;
@@ -433,6 +434,7 @@ And then I just rotate by 30*num where num is the current box's number in the 'q
 //	Listen for swatch change. If it's the eraser, set eraser mode. Else, change brush color.
 				brushSwatches.addEventListener('change', function(e){
 					setCurrentColor(e.target.value);
+					canvasContext.globalCompositeOperation = prevDrawMode;
 				});
 
 
@@ -441,6 +443,8 @@ And then I just rotate by 30*num where num is the current box's number in the 'q
 					canvasContext.globalCompositeOperation = e.target.value;
 					if (e.target.value == 'destination-out') {
 						setCurrentColor('transparent');
+					} else {
+						prevDrawMode = e.target.value;
 					}
 				});
 
