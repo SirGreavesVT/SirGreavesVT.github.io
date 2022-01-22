@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Draw on screen</title>
+
+		<style type="text/css">
+			*, *::before, *::after {
+				position: relative;
+				box-sizing: border-box;
+			}
+
+			:root {
+				--current-color: #000000;
+			}
+
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				height: 100vh;
+				width: 100vw;
+			}
+/* Uncomment for browser-testing, comment for use in an OBS browser source
+			body {
+				background: black;
+				color: white;
+				font-size: 30px;
+				font-family: sans-serif;
+			}
+*/
+			#brush, #brushDebug {
+				pointer-events: none;
+			}
+			#brush {
+				background: var(--current-color);
+				position: absolute;
+				width: 20px;
+				height: 20px;
+				border-radius: 50%;
+				transform: translate(-50%, -50%);
+				z-index: 10;
+			}
+			#brush, #brushSwatches {
+				border: 1px solid white;
+				box-shadow: 0 0 0 1px rgba(0,0,0,1);
+			}
+/*
+			#paintCanvas {
+				box-shadow: 0px 0px 12px 4px rgba(0,0,0,1) inset;
+			}
+*/
+
+
+			#brushGroup {
+				width: 200px;
+				height: 200px;
+				position: absolute;
+				top: 200px;
+				left: 200px;
+				transform: translate(-50%, -50%);
+			}
+			#brushSwatches {
+				width: 100%;
+				height: 100%;
+				background: #000000;
+				overflow: hidden;
+				border-radius: 50%;
+				position: absolute;
+			}
+			.color {
+				overflow: hidden;
+				position: absolute;
+				bottom: 50%;
+				left: 50%;
+				width: 50%;
+				height: 50%;
+				transform-origin: 0 100%;
+			}
+			[for='eraser'] {
+				display: block;
+				position: absolute;
+				border-radius: 50%;
+				top: 50%;
+				left: 50%;
+				width: 50%;
+				height: 50%;
+				transform-origin: 0 100%;
+				transform: translate(-50%, -50%);
+				box-shadow: 0 0 0 1px white;
+				background: black;
+			}
+			[for='eraser']::after {
+				content: '';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 30px;
+				height: 50px;
+				border: 6px solid white;
+				border-top: 30px solid white;
+				border-radius: 3px 3px 15px 3px;
+				transform-origin: 50% 50%;
+				transform: translate(-50%, -50%) rotate(45deg);
+			}
+			input[name='swatch'] {
+				display: none;
+			}
+
+
+
+			.show, .hide {
+				transition: opacity 300ms;
+			}
+			.show {
+				opacity: 1;
+			}
+			.hide {
+				opacity: 0;
+				pointer-events: none;
+			}
+
+
+			#drawMode {
+				width: 200px;
+				height: 200px;
+				position: absolute;
+				pointer-events: none;
+			}
+			#drawMode label {
+				pointer-events: initial;
+			}
+			input[name='drawMode'] {
+				display: none;
+			}
+
+
+			.btn {
+				display: block;
+				
+				position: absolute;
+				width: 50px;
+				height: 50px;
+				border-radius: 50%;
+				background: #191919;
+				border: 1px solid #333333;
+
+				transform-origin: 50% 50%;
+				transform: translate(-50%, -50%);
+			}
+			.drawOver {
+				top: 115%;
+				left: 20%;
+			}
+			.drawUnder {
+				top: 120%;
+				left: 50%;
+			}
+			.drawOn {
+				top: 115%;
+				left: 80%;
+			}
+			.btn::before, .btn::after {
+				content: '';
+				display: block;
+				--size: 40%;
+				width: var(--size);
+				height: var(--size);
+				position: absolute;
+				border: 1px solid white;
+			}
+			.btn::after {
+				background: var(--current-color);
+				top: 25%;
+				left: 25%;
+			}
+			.btn::before {
+				background: white;
+				bottom: 25%;
+				right: 25%;
+			}
+			.drawUnder::before {
+				z-index: 1;
+			}
+			.drawOn::after {
+				--size: 32%;
+				top: 35%;
+				left: 35%;
+			}
+
+		</style>
+
+		<script type="text/javascript">
+//	This container function just tells the script to wait for the page to load before doing anything.
+//	You can accomplish the same thing by having the <script> element after the <body> element, but I hate doing that.
+			document.addEventListener('DOMContentLoaded', function(){
+
+
+/* ############ Variables ################################################## */
+
+/*
+	CONFIG
+
+	Want to add colors?
+	Remove colors?
+	Change brush min/max?
+
+	DO IT HERE.
+*/
+
+//	Define list of colors (you must follow this format if you wish to change the colors) (technically rgba and whatnot will work, but please use hex - I won't troubleshoot misuse)
+				var brushColors = [
+					'#191919',	// Black-ish
+					'#840d00',	// Red
+					'#55371f',	// Brown
+					'#ff914f',	// Orange
+					'#ffd964',	// Yellow
+					'#92f23d',	// Lime
+					'#339933',	// Green
+					'#3da7f2',	// Light blue
+					'#333c88',	// Dark blue
+					'#332d61',	// Purple
+					'#9150e9',	// Violet
+					'#FAFAFA'	// White-ish
+				];
+
+//	Define default, min, and max brush size in pixels
+				var brushSize = 20;
+
+				var brushMin = 10;
+				var brushMax = 100;
+
+
+
+/*
+	The meat and potatoes of the project's script starts here.
+
+	You don't need to touch it.
+
+	I've provided comments where I felt they were most helpful, but
+	I'm not going to comment every single line because I feel that would be pointless.
+
+	If you don't know what you're doing, you shouldn't mess with this stuff,
+	but the comments will explain what each section does so you don't have to be concerned about any of it.
+*/
+
+
+
+//	Set reference variables for HTML elements
+				var CSSroot = document.querySelector(':root');
+				var brush = document.getElementById('brush');
+//				var brushDebug = document.getElementById('brushDebug');
+				var brushGroup = document.getElementById('brushGroup');
+				var brushSwatches = document.getElementById('brushSwatches');
+				var canvas = document.getElementById("paintCanvas");
+				var drawModeToggle = document.getElementById("drawMode");
+
+//	Set canvas to viewport size
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+
+//	Set brush default to first designated color and handle the swatch-wheel stuff. Add eraser to the end so it doesn't mess with the wheel.
+				var degPerSlice = 360/brushColors.length;
+				var swatchSkew = 90-degPerSlice;
+
+				var brushColor = '#FF0000';
+/*
+90-(360/colors)
+So in this case, I have 12 colors.
+360/12=30
+90-30=60
+Skewing 90 by -60 leaves the corner at 30 degrees
+
+And then I just rotate by 30*num where num is the current box's number in the 'queue'.
+*/
+
+
+//	Set default drawing state to false, and default previous cursor locations to 0, 0
+				var isDrawing = false;
+				var prevX = 0, prevY = 0;
+
+//	Define canvas context and stroke styles
+				var canvasContext = canvas.getContext("2d");
+				canvasContext.lineJoin = 'round';
+				canvasContext.lineCap = 'round';
+				canvasContext.lineWidth = brushSize;
+
+//	Set empty idleTimer variable for later use.
+				var idleTimer;
+
+
+/* ############ Functions ##################################################### */
+
+//	This is a mess but I find it easier to read than if it was compressed
+//	For each item in 'brushColors',
+				brushColors.forEach(function(item, index){
+
+//	Make the style skew and rotate the swatch so it looks like a slice of a pie
+					var swatchBackground = item, swatchId = item, swatchValue = item;
+					var swatchStyle = 'transform: rotate(' + (index*degPerSlice) + 'deg) skewY(-' + swatchSkew + 'deg); background: ' + swatchBackground + ';';
+					var swatch = '<label for="' + swatchId + '" class="color" style="' + swatchStyle + '"><input type="radio" name="swatch" id="' + swatchId + '" value="' + swatchValue + '"></label>';
+
+//	Container variable for legibility
+//	Stick the swatch in the swatch-wheel
+					brushSwatches.insertAdjacentHTML('beforeend', swatch);
+				});
+
+//	Universal 'show' function
+//	If the element contains the class 'hide', show it
+				function showControls(elem) {
+					if(elem.classList.contains('hide')){
+						elem.classList.remove('hide');
+						elem.classList.add('show');
+					}
+				}
+
+//	Universal 'hide' function
+//	If the element contains the class 'show', hide it
+				function hideControls(elem) {
+					if(elem.classList.contains('show')) {
+						elem.classList.remove('show');
+						elem.classList.add('hide');
+					}
+				}
+
+//	Resize the brush. Simple. The scroll wheel eventListener uses this, but anything can.
+				function resizeBrush(size) {
+					brush.style.width = size + 'px';
+					brush.style.height = size + 'px';
+					canvasContext.lineWidth = size;
+				}
+
+//	Draw function. If the user isn't drawing, do nothing. Otherwise, start a path at the previous X and Y, then move to the current X and Y and set the old X and Y to the current (so it continues from there)
+				function draw(e) {
+					if (!isDrawing) return;
+
+					canvasContext.beginPath();
+					canvasContext.moveTo(prevX, prevY);
+					canvasContext.lineTo(e.offsetX, e.offsetY);
+					canvasContext.stroke();
+
+					prevX = e.offsetX;
+					prevY = e.offsetY;
+				}
+
+//	Clear the whole canvas.
+				function clearAll() {
+					canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+				}
+
+//	Set current color, update the root CSS variable, etc.
+				function setCurrentColor(currentColor) {
+					CSSroot.style.setProperty('--current-color', currentColor);
+					brushColor = currentColor;
+					canvasContext.strokeStyle = currentColor;
+				}
+
+
+
+
+/* ############ Event Listeners ############################################### */
+
+//	Show document when mouse enters
+				document.addEventListener('mouseover', function(){
+					clearTimeout(idleTimer);
+					showControls(document.body);
+				});
+
+//	Set three-second time-out to hide document when mouse leaves
+				document.addEventListener('mouseout', function(){
+					idleTimer = setTimeout(function(){
+//						hideControls(document.body);
+					}, 3*1000);
+				})
+
+//	When the mouse moves, (show the document, and) set the brush element to its position
+				document.addEventListener('mousemove', function(e){
+					showControls(document.body);
+
+					var mouseTop = e.pageY;
+					var mouseLeft = e.pageX;
+					brush.style.top = mouseTop + 'px';
+					brush.style.left = mouseLeft + 'px';
+				});
+
+//	When the scroll-wheel is used, prevent the default action, show the document, and change brush size
+				document.addEventListener('wheel', function(e){
+					e.preventDefault();
+					showControls(document.body);
+
+					brushSize += (e.deltaY/100)*5;
+					brushSize = Math.round(Math.min(Math.max(brushMin, brushSize), brushMax));
+					resizeBrush(brushSize);
+				});
+
+//	On right-click, prevent default action. If swatch-wheel is hidden, set swatch-wheel position to cursor, then show it. Else, hide swatch-wheel
+				document.addEventListener('contextmenu', function(e){
+					e.preventDefault();
+					if(brushGroup.classList.contains('hide')) {
+						brushGroup.style.top = e.pageY + 'px';
+						brushGroup.style.left = e.pageX + 'px';
+						showControls(brushGroup);
+					} else {
+						hideControls(brushGroup);
+					}
+					return false;
+				});
+
+
+//	If left-click is used on the canvas, user is drawing. Set previous X and Y to this position and draw the initial dot.
+				canvas.addEventListener("mousedown", function (e) {
+					if(e.which == 1) {
+						isDrawing = true;
+
+						prevX = e.offsetX;
+						prevY = e.offsetY;
+						draw(e);	// Makes initial dot, so you can just click around
+					}
+				});
+
+
+//	When the mouse moves, follow it and draw lines
+				canvas.addEventListener("mousemove", draw);
+//	Mouse released? Stop drawing
+				canvas.addEventListener("mouseup", function() { isDrawing = false });
+//	Mouse leaves canvas? Stop drawing.
+				canvas.addEventListener("mouseout", function() { isDrawing = false });
+
+
+//	Listen for swatch change. If it's the eraser, set eraser mode. Else, change brush color.
+				brushSwatches.addEventListener('change', function(e){
+					setCurrentColor(e.target.value);
+				});
+
+
+//	Listen for a draw-mode change. Changes the draw mode. haha
+				drawModeToggle.addEventListener('change', function(e){
+					canvasContext.globalCompositeOperation = e.target.value;
+					if (e.target.value == 'destination-out') {
+						brush.style.backgroundColor = 'transparent';
+					} else {
+						brush.style.backgroundColor = brushColor;
+					}
+					console.log(e.target.value);
+				});
+
+//	Set default swatch and color
+				setCurrentColor(brushColors[0]);
+
+				document.querySelectorAll('input[name="swatch"]')[0].checked = true;
+				document.querySelectorAll('input[name="drawMode"]')[1].checked = true;
+
+
+
+//	Listen for keypress. If escape key is pressed, clear the canvas.
+				window.addEventListener('keydown', function(e){
+					switch(e.keyCode){
+						case 27: // Escape key
+							clearAll();
+							break;
+					}
+				});
+			});
+		</script>
+	</head>
+	<body class="hide">
+		<canvas id="paintCanvas"></canvas>
+
+
+		<div id="brushGroup" class="show">
+			<div id="brushSwatches"></div>
+
+			<div id="drawMode">
+				<label for="eraser">
+					<input type="radio" name="drawMode" id="eraser" value="destination-out">
+				</label>
+				<label for="drawOver" class="btn drawOver">
+					<input type="radio" name="drawMode" id="drawOver" value="source-over"> <!-- normal -->
+				</label>
+				<label for="drawUnder" class="btn drawUnder">
+					<input type="radio" name="drawMode" id="drawUnder" value="destination-over"> <!-- draw under/behind -->
+				</label>
+				<label for="drawOn" class="btn drawOn">
+					<input type="radio" name="drawMode" id="drawOn" value="source-atop"> <!-- draw over -->
+				</label>
+			</div>
+		</div>
+
+
+		<div id="brush"></div>
+	</body>
+</html>
+
+
