@@ -88,6 +88,25 @@
 			p:last-child {
 				margin-bottom: 0;
 			}
+			hr {
+				opacity: 0.1;
+				width: 80%;
+			}
+
+
+			@media screen and (max-width: 900px) {
+				.content {
+					padding: 0;
+				}
+			}
+			@media screen and (max-width: 600px) {
+				.header {
+					height: 200px;
+				}
+				.nav a .hideOnMobile {
+					display: none;
+				}
+			}
 		</style>
 	</head>
 
@@ -96,9 +115,9 @@
 		<div class="header"></div>
 		<div class="nav">
 			<div class="limit">
-				<a href="http://youtube.com/SirGreavesVT">Youtube (SirGreavesVT)</a><!--
+				<a href="http://youtube.com/SirGreavesVT">Youtube<span class="hideOnMobile"> (SirGreavesVT)</span></a><!--
 			--><div class="spacer"></div><!--
-				--><a href="http://twitter.com/Sir_Greaves">Twitter (@Sir_Greaves)</a>
+				--><a href="http://twitter.com/Sir_Greaves">Twitter<span class="hideOnMobile"> (@Sir_Greaves)</span></a>
 			</div>
 		</div>
 		<div class="icon"></div>
