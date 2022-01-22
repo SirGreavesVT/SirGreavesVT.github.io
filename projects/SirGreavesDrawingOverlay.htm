@@ -22,14 +22,7 @@
 				height: 100vh;
 				width: 100vw;
 			}
-/* Uncomment for browser-testing, comment for use in an OBS browser source
-			body {
-				background: black;
-				color: white;
-				font-size: 30px;
-				font-family: sans-serif;
-			}
-*/
+
 			#brush, #brushDebug {
 				pointer-events: none;
 			}
@@ -110,17 +103,6 @@
 
 
 
-			.show, .hide {
-				transition: opacity 300ms;
-			}
-			.show {
-				opacity: 1;
-			}
-			.hide {
-				opacity: 0;
-				pointer-events: none;
-			}
-
 
 			#drawMode {
 				width: 200px;
@@ -187,6 +169,22 @@
 				--size: 32%;
 				top: 35%;
 				left: 35%;
+			}
+
+
+
+
+			.show, .hide {
+				transition: opacity 300ms;
+			}
+			.show {
+				opacity: 1;
+			}
+			.hide {
+				opacity: 0;
+			}
+			.hide * {
+				pointer-events: none !important;
 			}
 
 		</style>
