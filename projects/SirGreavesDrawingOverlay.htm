@@ -432,7 +432,7 @@ And then I just rotate by 30*num where num is the current box's number in the 'q
 //	Listen for swatch change. If it's the eraser, set eraser mode. Else, change brush color.
 				brushSwatches.addEventListener('change', function(e){
 					setCurrentColor(e.target.value);
-					canvasContext.globalCompositeOperation = prevDrawMode;
+					canvasContext.globalCompositeOperation = 'source-over';
 				});
 
 
