@@ -4,9 +4,9 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-		
-		<title>Sir Greaves (Github.io)</title>
+		<title>Sir Greaves' Github.io</title>
+
+		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans">
 
 		<style type="text/css">
 			*, *::before, *::after {
@@ -14,145 +14,97 @@
 				position: relative;
 			}
 			body {
-				background: #DFDFDF;
-				color: #191919;
+				background: #191919;
+				color: #DFDFDF;
 				margin: 0;
-				font-family: Open Sans;
-				line-height: 1.4em;
+				text-shadow: 1px 1px 3px #000000;
+				font-family: 'open sans';
+				font-size: 1.1rem;
+				line-height: 1.1em;
 			}
-			.header, .icon {
-				background-position: center;
-				background-size: 100% auto;
-				background-repeat: no-repeat;
-			}
-			.header {
-				height: 300px;
-				background-color: #777777;
-				background-image: url('./YouTube-Banner-Template.jpg');
-			}
-			.nav, .icon, .post {
-				box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
-			}
-			.nav {
-				height: 50px;
-				line-height: 50px;
-				text-align: center;
-			}
-			.nav, .post {
-				background-color: #FAFAFA;
-			}
-			a {
-				color: #191919;
-			}
-			.nav .spacer {
-				display: inline-block;
-				width: 250px;
-			}
-			.icon {
-				width: 200px;
-				height: 200px;
-				border-radius: 50%;
-				border: 7px solid #FAFAFA;
-				margin: 0 auto;
-				margin-top: -100px;
-				margin-bottom: -75px;
-				z-index: 1;
 
-				background-color: #191919;
-				background-image: url('./icon.png');
+			h3 {
+				margin: 0 0 0.5em 0;
 			}
-			.content {
-				max-width: 1000px;
-				padding: 0 50px;
-				margin: 0 auto 100px;
+			h3, a {
+				color: #f0c587;
 			}
-			.post, img {
-				border-radius: 6px;
-			}
-			.post {
-				margin-top: 25px;
-				padding: 16px;
-			}
-			img.right {
-				float: right;
-				margin-left: 25px;
-			}
-			img.left {
-				float: left;
-				margin-left: 25px;
-			}
-			img.px200 {
-				width: 200px;
-				height: 200px;
-			}
-			h1, h2, h3, h4, h5, h6 {
+			p {
 				margin-top: 0;
-				font-weight: 300;
 			}
 			p:last-child {
-				margin-bottom: 0;
-			}
-			hr {
-				opacity: 0.1;
-				width: 80%;
+				margin: 0;
 			}
 
+			#container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 20px;
 
-			@media screen and (max-width: 900px) {
-				.content {
-					padding: 0;
-				}
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 20px;
 			}
-			@media screen and (max-width: 624px) {
-				img.right, img.left {
-					float: none;
-					display: block;
-					margin: 0 auto 1em;
-				}
+
+			#header, #nav, .item {
+				padding: 10px;
+				border-radius: 20px;
+				box-shadow: 1px 1px 6px rgba(0,0,0,0.4);
 			}
-			@media screen and (max-width: 620px) {
-				.header {
-					height: 200px;
-				}
-				.nav a .hideOnMobile {
-					display: none;
-				}
+
+			#header {
+				height: 200px;
+
+				background-image: url('./img/Sir Greaves banner.jpg');
+				background-position: center center;
+				background-repeat: no-repeat;
+				background-size: cover;
+			}
+			#icon {
+				background-image: url('./img/Sir Greaves icon.jpg');
+			}
+			#header, #nav {
+				grid-column: 1 / -1;
+				width: 100%;
+			}
+			#nav, .item {
+				background: #5F261F;
+			}
+			#nav {
+				height: 50px;
+				display: grid;
+				justify-content: center;
+				align-items: center;
+			}
+			.item img {
+				display: block;
+				float: left;
+				height: 116px;
+				aspect-ratio: 1;
+				background: #191919;
+				border-radius: 16px;
+				margin-right: 10px;
 			}
 		</style>
 	</head>
-
 	<body>
-		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-		<div class="header"></div>
-		<div class="nav">
-			<div class="limit">
-				<a href="http://youtube.com/SirGreavesVT">[Youtube]<span class="hideOnMobile"> (SirGreavesVT)</span></a><!--
-			--><div class="spacer"></div><!--
-				--><a href="http://twitter.com/Sir_Greaves">[Twitter]<span class="hideOnMobile"> (@Sir_Greaves)</span></a>
+		<div id="container">
+			<div id="header"></div>
+			<div id="nav">
+				<span><a href="">Youtube</a> (I stream weekly!)</span>
 			</div>
-		</div>
-		<div class="icon"></div>
-		<div class="content">
-			<div class="post">
-				<h1>Well met!</h1>
-				<p>I'm <b>Sir Greaves!</b> I'm a Canadian sunlight paladin vtuber who likes to play medieval action-RPGs. ( Souls games, Skyrim, etc. But of course will try other stuff! ) I like to keep a wholesome, comfy vibe and try to make everyone feel welcome. ( LGBTQIA+ is all good! )</p>
-				<p>I stream on Youtube every Saturday from 10 am Pacific.</p>
-				<p>If you wanna hang out in chat and give me some advice on whatever game I'm playing, or just want to watch some smooth-brain shenanigans, or even if it's just that action-RPGs are your thing, consider subscribing! :D It'd be great to see you!</p>
+			<div class="item">
+				<img src="./img/projects/drawing overlay.png" alt="image showing a preview of the drawing overlay">
+				<h3><a href="./projects/SirGreavesDrawingOverlay.htm">Drawing Overlay</a></h3>
+				<p>Copy <a href="https://sirgreavesvt.github.io/projects/SirGreavesDrawingOverlay.htm">[this]</a> link and paste it into an OBS browser source set to your stream's resolution. Make sure it's under any overlays or vtuber models, but over any game or monitor input sources.</p>
+				<p><b>Escape</b> clears the whole canvas. <b>Right-click</b> toggles the palette. <b>Mousing-out</b> hides the overlay. <b>Scroll-wheel</b> changes brush size. There is no opacity, but there are three draw-modes. (Buttons under the palette.)</p>
 			</div>
-			<div class="post">
-				<img class="right px200" src="./Screenshot_435.png" alt="Drawing overlay preview">
-				<h1>Drawing Overlay</h1>
-				<p>If you're here for the drawing overlay I've been working on, <b>read this first:</b></p>
-				<p>Copy <a href="./projects/SirGreavesDrawingOverlay.htm">[this]</a> link and paste it into an OBS browser source set to your stream's resolution. Make sure it's under any overlays or vtuber models you have set up, but over any game or monitor input sources.</p>
-				<p>That's it! You can also download the file and link it locally in OBS, but copying that link will ensure you receive any updates or bugfixes automatically.</p>
-				<p><b>Things to keep in-mind:</b></p>
-				<p>To interact with it, you have to right-click the browser source and click "interact".</p>
-				<p><b>Escape</b> clears the whole canvas. <b>Right-click</b> shows and hides the palette. <b>Mousing-out</b> hides the overlay. <b>Scroll-wheel</b> changes brush size. There is no opacity, but there are three draw-modes. (Buttons under the palette.)</p>
-				<hr>
-				<p>If you'd like to support future development, you can do so <a href="https://streamelements.com/sirgreaves/tip">[here]</a>. It would be greatly appreciated!~</p>
-				<p>If you use it, please give me credit with a link back to this page and my Youtube channel (SirGreavesVT) in your video/stream info.</p>
-				<hr>
-				<p>And there will be updates! I still have plans for this little thing, but it's functional enough to distribute, so enjoy!</p>
+			<div class="item">
+				<img src="./img/projects/SotE Bingo.jpg" alt="image showing a preview of SotE bingo">
+				<h3><a href="./projects/SirGreavesSotEBingo.htm">Shadow of the Erdtree Bingo</a></h3>
+				<p>Meant to be played alongside my Shadow of the Erdtree streams.</p>
+				<p>This bingo contains over 100 items from either the Shadow of the Erdtree trailers, what I personally hope to see, or some things I commonly do or say while playing these games.</p>
+				<p>Visiting from the header of this text will roll a random sheet.</p>
 			</div>
 		</div>
 	</body>
