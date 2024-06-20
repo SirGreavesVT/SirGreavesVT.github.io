@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Sir Greaves' Shadow of the Erdtree Bingo!</title>
+
+		<style type="text/css">
+			*, *::before, *::after {
+				position: relative;
+				box-sizing: border-box;
+			}
+			body {
+				min-height: 100vh;
+				margin: 0;
+				background-color: black;
+/*	https://colorzilla.com/gradient-editor	*/
+				background: linear-gradient(to top, #000000 0%, #35362d 4%, #555447 10%, #434034 14%, #26241f 35%, #1a1913 50%, #000000 100%);
+
+				display: grid;
+				text-align: center;
+				align-items: center;
+			}
+
+			#container {
+				background: #181712;
+				margin: auto;
+				width: 700px;
+				height: 800px;
+				display: grid;
+				grid-template-columns: repeat(5, 1fr);
+				grid-template-rows: repeat(6, 1fr);
+				padding: 10px;
+				gap: 20px;
+
+				/*	left top blur spread color inset	*/
+				box-shadow: 0px 0px 10px 10px #181712;
+			}
+			#container::before {
+				pointer-events: none;
+				user-select: none;
+
+				content: attr(seed);
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				text-align: center;
+				color: rgba(255,255,255,0.2);
+			}
+
+			.bingoHeader {
+				grid-column: 1 / -1;
+			}
+
+			.square {
+			}
+
+			.square .foreground, .square .background, .square span {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+			}
+
+			.square .foreground, .square .background {
+				filter: blur(5px);
+			}
+			.square .foreground {
+				opacity: 0;
+				background: radial-gradient(ellipse at center, rgba(205,195,140,0) 0%, rgba(205,195,140,0.25) 40%,rgba(205,195,140,1) 100%);
+			}
+			.square .background {
+				background: linear-gradient(to top, rgba(55,55,45,0) 0%, rgba(55,55,45,1) 15%, rgba(55,55,45,0.3) 50%, rgba(55,55,45,0) 100%);
+			}
+
+			.square span {
+				display: grid;
+				text-align: center;
+				align-items: center;
+
+				padding: 0 10px;
+
+				text-transform: capitalize;
+				color: #CECCC7;
+				font-size: 18px;
+				line-height: 0.95em;
+				text-shadow: 2px 2px 3px #000000;
+
+				pointer-events: none;
+				user-select: none;
+			}
+			.bingoHeader span {
+				color: #E1C689;
+				font-size: 40px;
+			}
+			.square:nth-child(14) span {
+				font-size: 30px;
+			}
+
+			.square input[type="checkbox"] {
+				position: absolute;
+				visibility: hidden;
+			}
+
+			.square:hover input:not(:checked) ~ .foreground {
+				opacity: 0.5;
+			}
+			.square input:checked ~ .foreground {
+				opacity: 1;
+			}
+		</style>
+
+		<script type="text/javascript">
+/*
+
+If this is bad code, I don't wanna hear about it.
+I don't do this for a living lmao
+
+*/
+			window.addEventListener("load", () => {
+
+				const bingoItems = [
+					'DLC map is in the gap of Lands Between',
+					'DLC map is a layer on top of Lands Between',
+					'Holy buff',
+					'PvP balance pass',
+					'DS3 Projected Heal equivalent',
+					'Melina&#39;s heal-tree incantation',
+					'Lightning Arrow',
+					'Crucible Wings',
+					'Crucible Claw',
+					'Lightning ball (Wyndham Watchdog)',
+					'Sunlight Spear',
+					'Death-filled Paladin Playground',
+					'Chalice Dungeons',
+					'DS3-vibes Knight set',
+					'intact Sun Realm Shield',
+					'non-Blasphemous blade',
+					'Scale-less Scaled set',
+					'DS3 LKGS equivalent',
+					'colored hip-lanterns',
+					'clean Gargoyle sword',
+					'Red w/ gold trim Knight chest',
+					'Skirted Leggings',
+					'shield Sir Greaves really likes',
+					'bubble shield (spherical force field)',
+					'sword-as-seal (Castle Sol Banished Knight)',
+					'tailor Ecranche off',
+					'tailor metal color',
+					'DLC is just as dark as other Souls',
+					'closed eyes in character creation',
+					'Tibia & Fibula Mariner duo',
+					'let us re-fight bosses without NG+',
+					'crafting material merchants',
+					'Cool knights',
+					'de/activating summoning pools',
+					'summon pool indicators on map',
+					'New Knight is more present than Melina',
+					'New Knight dies',
+					'Crystalians',
+					'Erdtree Avatar',
+					'Tree Spirit',
+					'Dragon',
+					'Normal knight as a boss',
+					'Tough knight guards a boss',
+					'Margit shows up a fourth time',
+					'Prime Malenia (or other Shardbearer)',
+					'Secret boss',
+					'Secret dungeon',
+					'Gravity boss',
+					'Sleep boss',
+					'Winter Lanterns',
+					'BIG dungeon(s)',
+					'Death Rite Bird duo',
+					'Tower Knight style boss pls',
+					'1-2 shot with 60 VIG and no SoreSeal',
+					'FASHION',
+					'Duo+ boss that&#39;s just normal enemies',
+					'Royal Revenant',
+					'Damage sponge boss',
+					'Miranda Bloom incant',
+					'New great Rune',
+					'"That&#39;s so cool!"',
+					'Casting-tool weapon or AoW',
+					'"Ewww / gross!"',
+					'"This is mine now."',
+					'"I&#39;m leaving!"',
+					'New hub area',
+					'New Physick tears',
+					'FP regen talisman',
+					'Feminine armor (not dress or robes)',
+					'Madness boss',
+					'Blue flower fields',
+					'Bridges have catapults or ballistas',
+					'Giant Fire',
+					'Castle Thorn has Havel, Lion, twisty tree, and Messmer',
+					'Havel is actually a girl',
+					'Ancient Dragon Smithing Stone vendor',
+					'Slightly different boss name (Margit -&gt; Morgott)',
+					'Throwing weapons',
+					'Giant throwing-jar',
+					'Great Katana',
+					'Reverse-grip weapons',
+					'Unarmed combat',
+					'Dueling Shield',
+					'Cozy area',
+					'Creepy area',
+					'Amazing music',
+					'If not friend, why friend-shaped?',
+					'Trick weapons (or some other gimmick)',
+					'Is this Bloodborne?',
+					'White Carian Knight set',
+					'Muscle cuirass',
+					'Havel equivalent',
+					'Eepy person',
+					'Sleep incants / spells, etc',
+					'Basilisks',
+					'Surprising lack of Basilisks',
+					'Warp gate or coffin',
+					'Cool dungeon(s)!',
+					'Colosseum PvE mode',
+					'Carian Inverted Statue person',
+					'Madness swamp (or Deathblight or sleep)',
+					'Impaled-by-rune-tree(?) guy',
+					'Slurp-worm',
+					'Dragon dance lion',
+					'Messmer isn&#39;t the final boss (like Malenia)',
+					'Arteria Leaf',
+					'Elden Ring crashes',
+					'Arteria Leaf, but a second time',
+					'Machine Crossbow knight',
+					'Gravity pinecone',
+					'Boar helm',
+					'NPC dies at the end of their quest',
+					'Miquella is good',
+					'Miquella is bad',
+					'*External Screaming*',
+					'Previously unused Ragged set',
+					'Previously unused Brave&#39;s Set',
+					'Can choose eye modification'
+				];
+
+				const bingoContainer = document.getElementById('container');
+
+				const makeSeedFromTime = () => {
+					const unix2024 = new Date(2024, 1, 1).getTime();
+					const unixMS = Math.floor(Date.now());
+					const Since2024 = (unixMS - unix2024);
+					const timeMath = Math.floor(Math.abs(Since2024 * Math.sin(Since2024)));
+
+					return timeMath;
+				}
+
+				const getSeedFromURL = () => {
+					let url = new URL(window.location.href);
+					let urlSeed = url.searchParams.get('seed');
+
+					if(urlSeed === null || urlSeed == '' || urlSeed.match(/[^0-9a-z]/g) || urlSeed.length > 10) {
+						urlSeed = makeSeedFromTime().toString(36);
+						url.searchParams.set('seed', urlSeed);
+						window.history.replaceState({}, '', url);
+					}
+
+					return urlSeed;
+				}
+
+				// https://stackoverflow.com/a/19303725
+				const randomFromSeed = (seed) => {
+					const x = Math.sin(seed) * 10000;
+					return x - Math.floor(x);
+				}
+
+				const generateBingoFromArray = (seed, arrayForBingo) => {
+					if (arrayForBingo.length < 24) {
+						return ['Too few items in array'];	// empty array avoids errors in array.map later
+					}
+					seed = parseInt(seed, 36);
+					const usedItems = [];
+					const arrayLength = arrayForBingo.length;
+
+					for (let i = 0; usedItems.length < 25; i++) {
+						if (usedItems.length == 12) {
+							usedItems.push('Free Space!');
+						} else {
+							let seededRandNum = Math.floor(randomFromSeed(seed + i) * arrayLength);
+
+							while(usedItems.includes(arrayForBingo[seededRandNum])) {
+								i++;
+								seededRandNum = Math.floor(randomFromSeed(seed + i) * arrayLength);
+							}
+
+							usedItems.push(arrayForBingo[seededRandNum]);
+						}
+					}
+
+					return usedItems;
+				}
+
+
+
+				const seed = getSeedFromURL();
+				bingoContainer.setAttribute('seed', seed);
+				bingoContainer.innerHTML += generateBingoFromArray(seed, bingoItems).map((item) => `<label class="square">
+<input type="checkbox">
+<div class="background"></div>
+<span>${item}</span>
+<div class="foreground"></div>
+</label>`).join('');
+
+			});
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div class="square bingoHeader">
+				<div class="background"></div>
+				<span>Sir Greaves'<br/>Shadow of the Erdtree Bingo</span>
+			</div>
+		</div>
+	</body>
+</html>
